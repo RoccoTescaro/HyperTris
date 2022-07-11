@@ -5,7 +5,7 @@ function makeMove(board_, index_)
   board_.moves.push(parseInt(index_));
   var chunkIndex = parseInt(index_/9);
   board_.cells[index_] = board_.turn;
-  board_.chunks[chunkIndex] = board_.check(board_,chunkIndex*9,board_.cells);
+  board_.chunks[chunkIndex] = check(board_,chunkIndex*9,board_.cells);
   board_.turn = -board_.turn;
 }
 
