@@ -66,7 +66,7 @@ function generatePossibleMoves(board_)
   return possibleMoves;
 }
 
-function evaluate()
+function evaluate(board_)
 {
   var xMaterial = countMaterial(board_,1);
   var oMaterial = countMaterial(board_,-1);
