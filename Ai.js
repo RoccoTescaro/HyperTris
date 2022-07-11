@@ -1,7 +1,7 @@
 importScripts("Board.js");
 
 onmessage = function(e) {
-  const result = findBestMove(e.data[0],7);
+  const result = findBestMove(JSON.parse(e.data),7);
   postMessage(workerResult);
 }
 

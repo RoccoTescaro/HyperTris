@@ -118,7 +118,7 @@ function aiMakeMove(board_)
   if(board_.turn == 1)
     return;
 
-  myWorker.postMessage(board_);
+  myWorker.postMessage(JSON.stringify(board_));
 
   myWorker.onmessage = function(e) {
     var tuple = e.data;
