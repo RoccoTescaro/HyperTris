@@ -121,7 +121,7 @@ function evaluateLine(color_, base_, array_, row1_,col1_,row2_,col2_,row3_,col3_
 
 onmessage = function(e) {
   const result = findBestMove(JSON.parse(e.data),7);
-  postMessage(workerResult);
+  postMessage(result);
 }
 
 
