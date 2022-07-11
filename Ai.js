@@ -68,8 +68,8 @@ function generatePossibleMoves(board_)
 
 function evaluate()
 {
-  var xMaterial = countMaterial(board_,this.#player);
-  var oMaterial = countMaterial(board_,this.#ai);
+  var xMaterial = countMaterial(board_,1);
+  var oMaterial = countMaterial(board_,-1);
 
   var evaluation = xMaterial - oMaterial;
   return evaluation;
