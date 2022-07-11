@@ -1,0 +1,140 @@
+
+body
+{
+    background-color: #F0EBE3;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+#board
+{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    margin-top: -42.5vh;
+    margin-left: -42.5vh;
+    display: grid;
+    width: 85vh;
+    height: 85vh;
+    padding: 1vh;
+    padding-bottom: 2vh;
+    background-color: #E4DCCF;
+    border-radius: 2vh;
+    gap: 0.2vh;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1vh solid #A0988B;
+    z-index: 0;
+}
+
+.chunk
+{
+    --r: 87;
+    --g: 111;
+    --b: 114;
+    justify-self: center;
+    align-self: center;
+    display: grid;
+    width: 28vh;
+    height: 28vh;
+    line-height: 28vh;
+    margin: 0;
+    padding: 0;
+    background-color: #576F72;
+    border-radius: 2vh;
+    gap: 0.1vh;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 0.6vh solid #7D9D9C;
+    font-size: 20vh;
+    z-index: 1;
+}
+
+.cell
+{
+    --r: 240;
+    --g: 235;
+    --b: 227;
+    justify-self: center;
+    align-self: center;
+    display: table;
+    background-color: #F0EBE3;
+    margin: 0;
+    padding: 0;
+    width: 7.5vh;
+    height: 7.5vh;
+    line-height: 7.5vh;
+    border-radius: 1.5vh;
+    border-bottom: 0.6vh solid #C2BAAD;
+    overflow: hidden;
+    font-size: 6vh;
+    z-index: 2;
+}
+
+.text
+{
+  --r: inherit;
+  --g: inherit;
+  --b: inherit;
+  background-color: rgba(var(--r),var(--g),var(--b),0.25);
+  position:absolute;
+  width: inherit;
+  height: inherit;
+  line-height: inherit;
+  border: inherit;
+  border-radius: inherit;
+  text-align: center;
+  text-shadow: 0 0 1vh #F0EBE3;
+  font-family: "Trebuchet MS";
+  font-weight: bold;
+  color: #243C3F;
+  z-index:inherit;
+}
+
+
+.disabledCell
+{
+  background-color: #C2BAAD;
+  border-color: #F0EBE3;
+}
+
+.enabledCell:hover
+{
+  background-color: #F2FDF5;
+  border-color: #7D9D9C;
+}
+
+
+#evaluation_bar
+{
+  display: inline-block;
+  position: absolute;
+  overflow: hidden;
+  width: 3vh;
+  height: 85vh;
+  background-color: #E4DCCF;
+  border-radius: 2vh;
+  top: 2vh;
+  left: 89vh;
+  outline: 0.5vh solid #576F72;
+}
+
+#bar
+{
+  height: 50%;
+  width: 100%;
+  background-color: #7D9D9C;
+  transition: height 1s;
+}
+
+#evaluation_bar tick {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 0.25vh ridge #C2BAAD;
+}
