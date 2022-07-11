@@ -88,14 +88,14 @@ function countMaterial(board_,color_)
 function countChunkMaterial(color_, base_, array_)
 {
   var score = 0;
-  score += this.#evaluateLine(color_,base_,array_, 0, 0, 0, 1, 0, 2);  // row 0
-  score += this.#evaluateLine(color_,base_,array_, 1, 0, 1, 1, 1, 2);  // row 1
-  score += this.#evaluateLine(color_,base_,array_, 2, 0, 2, 1, 2, 2);  // row 2
-  score += this.#evaluateLine(color_,base_,array_, 0, 0, 1, 0, 2, 0);  // col 0
-  score += this.#evaluateLine(color_,base_,array_, 0, 1, 1, 1, 2, 1);  // col 1
-  score += this.#evaluateLine(color_,base_,array_, 0, 2, 1, 2, 2, 2);  // col 2
-  score += this.#evaluateLine(color_,base_,array_, 0, 0, 1, 1, 2, 2);  // diagonal
-  score += this.#evaluateLine(color_,base_,array_, 0, 2, 1, 1, 2, 0);  // alternate diagonal
+  score += evaluateLine(color_,base_,array_, 0, 0, 0, 1, 0, 2);  // row 0
+  score += evaluateLine(color_,base_,array_, 1, 0, 1, 1, 1, 2);  // row 1
+  score += evaluateLine(color_,base_,array_, 2, 0, 2, 1, 2, 2);  // row 2
+  score += evaluateLine(color_,base_,array_, 0, 0, 1, 0, 2, 0);  // col 0
+  score += evaluateLine(color_,base_,array_, 0, 1, 1, 1, 2, 1);  // col 1
+  score += evaluateLine(color_,base_,array_, 0, 2, 1, 2, 2, 2);  // col 2
+  score += evaluateLine(color_,base_,array_, 0, 0, 1, 1, 2, 2);  // diagonal
+  score += evaluateLine(color_,base_,array_, 0, 2, 1, 1, 2, 0);  // alternate diagonal
   return score;
 }
 
