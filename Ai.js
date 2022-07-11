@@ -1,3 +1,5 @@
+import "Board.js";
+
 onmessage = function(e) {
   const result = findBestMove(e.data[0],7);
   postMessage(workerResult);
