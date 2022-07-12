@@ -286,7 +286,7 @@ function zwSearch(board_, beta_, depth_)
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
       var move = possibleMoves[moveIndex];
-      makeMove(baord_, move);
+      makeMove(board_, move);
       var score = -zwSearch(1 - beta_, depth_ - 1);
       undoMove(board_);
       if(score >= beta_)
