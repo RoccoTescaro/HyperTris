@@ -238,7 +238,7 @@ function quiesce(board_, alpha_, beta_)
 
 function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 {
-  if(depth == 0)
+  if(depth_ == 0)
     return quiesce(board_, alpha_, beta_);
 
   var bSearchPV = true;
@@ -278,7 +278,7 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 
 function zwSearch(board_, beta_, depth_)
 {
-  if(depth == 0)
+  if(depth_ == 0)
     return quiesce(board_, beta_-1, beta_);
 
   var possibleMoves = generatePossibleMoves(board_);
