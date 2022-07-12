@@ -226,7 +226,7 @@ function quiesce(board_, alpha_, beta_)
   {
     var move = possibleTris[moveIndex];
     makeMove(board_, move);
-    var score = -quiesce(-beta_,-alpha_);
+    var score = -quiesce(board_,-beta_,-alpha_);
     undoMove(board_);
     if(score >= beta_)
       return beta_;
