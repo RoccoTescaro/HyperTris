@@ -68,8 +68,8 @@ function generatePossibleMoves(board_)
 
 function evaluate(board_)
 {
-  var xMaterial = countMaterial(board_,1);
-  var oMaterial = countMaterial(board_,-1);
+  var xMaterial = countMaterial(board_,board_.player);
+  var oMaterial = countMaterial(board_,board_.ai);
 
   var evaluation = xMaterial - oMaterial;
   return evaluation;
@@ -118,6 +118,22 @@ function evaluateLine(color_, base_, array_, row1_,col1_,row2_,col2_,row3_,col3_
   return 0;
 }
 
+
+function generatePossibleTris(board_)
+{
+    var lastMove = board_.moves.at(-1);
+    var possibleTris = generatePossibleMoves(board_);
+    var base = parseInt(lastMove/9)*9;
+    for(var i = 0; i < possibleTris.length; ++i)
+    {
+      var move = possibleTris[i];
+      makeMove(board_,move);
+      if(check(board_,base,this.cells)%2 == 0)
+        possibleTris.splice(i,1);
+      undoMove(board_);
+    }
+    return possibleTris;
+}
 
 onmessage = function(e) {
   const result = findBestMove(JSON.parse(e.data),7);
@@ -175,7 +191,7 @@ function findBestMove(board_, depth_)
   {
     var move = possibleMoves[moveIndex];
     makeMove(board_,move);
-    var score = -principalVariationSearch(board_,depth_);
+    var score = -pvsWithZWSearch(board_,depth_);
     undoMove(board_);
     if(score > bestScore)
     {
@@ -194,6 +210,87 @@ function order(possibleMoves_){
   var eval = [1,0,1,0,2,0,1,0,1];
   possibleMoves_.sort((a,b) =>
   {
-    return eval[b%9]-eval[a%9];
+    return (eval[b%9]+eval[parseInt(b/9)])-(eval[a%9]+eval[parseInt(a/9)]);
   });
+}
+
+function quiesce(board_, alpha_, beta_)
+{
+  var stand_path = evaluate(board_);
+  if(stand_path >= beta_)
+    return beta_;
+  alpha_ = Math.max(alpha_, stand_path);
+
+  var possibleTris = generatePossibleTris(board_);
+  for(var moveIndex = 0; moveIndex < possibleTris.length; ++moveIndex)
+  {
+    var move = possibleTris[moveIndex];
+    makeMove(board_, move);
+    var score = -quiesce(-beta_,-alpha_);
+    undoMove(board_);
+    if(score >= beta_)
+      return beta_;
+    alpha_ = Math.max(alpha_, score);
+  }
+
+  return alpha_;
+}
+
+function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
+{
+  if(depth == 0)
+    return quiesce(board_, alpha_, beta_);
+
+  var bSearchPV = true;
+  var possibleMoves = generatePossibleMoves(board_);
+  order(possibleMoves);
+
+  for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
+  {
+      var move = possibleMoves[moveIndex];
+      var score;
+      makeMove(board_, move);
+
+      if(bSearchPV)
+        score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
+      else
+      {
+        score = -zwSearch(board_, -alpha_, depth_-1);
+        if(score > alpha_)
+          score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
+      }
+
+      undoMove(board_);
+
+      if(score >= beta_)
+        return beta_;
+
+      if(score > alpha_)
+      {
+          alpha_ = score;
+          bSearchPV = false;
+      }
+
+  }
+
+  return alpha_;
+}
+
+function zwSearch(board_, beta_, depth_)
+{
+  if(depth == 0)
+    return quiesce(board_, beta_-1, beta_);
+
+  var possibleMoves = generatePossibleMoves(board_);
+  order(possibleMoves);
+  for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
+  {
+      var move = possibleMoves[moveIndex];
+      makeMove(baord_, move);
+      var score = -zwSearch(1 - beta_, depth_ - 1);
+      undoMove(board_);
+      if(score >= beta_)
+        return beta_;
+  }
+  return beta_ -1;
 }
