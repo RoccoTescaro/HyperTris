@@ -128,7 +128,7 @@ function generatePossibleTris(board_)
     {
       var move = possibleTris[i];
       makeMove(board_,move);
-      if(check(board_,base,this.cells)%2 == 0)
+      if(check(board_,base,board_.cells)%2 == 0)
         possibleTris.splice(i,1);
       undoMove(board_);
     }
@@ -136,7 +136,7 @@ function generatePossibleTris(board_)
 }
 
 onmessage = function(e) {
-  const result = findBestMove(JSON.parse(e.data),7);
+  const result = findBestMove(JSON.parse(e.data),5);
   postMessage(result);
 }
 
