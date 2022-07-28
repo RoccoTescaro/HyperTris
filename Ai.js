@@ -134,7 +134,7 @@ function zwSearch(board_, beta_, depth_)
   {
       var move = possibleMoves[moveIndex];
       board_.makeMove(move);
-      var score = -zwSearch(1 - beta_, depth_ - 1);
+      var score = -zwSearch(board_, 1 - beta_, depth_ - 1);
       board_.undoMove();
       if(score >= beta_)
         return beta_;
