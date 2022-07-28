@@ -117,6 +117,10 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
   if(depth_ == 0)
     return quiesce(board_, alpha_, beta_);
 
+  var checkResult = board_.check(0,board_.chunks);
+  if( checkResult != 0)
+    return -9999999*(checkResult != 2); 
+
   var bSearchPV = true;
   var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
@@ -154,6 +158,10 @@ function zwSearch(board_, beta_, depth_)
 {
   if(depth_ == 0)
     return quiesce(board_, beta_-1, beta_);
+
+  var checkResult = board_.check(0,board_.chunks);
+  if( checkResult != 0)
+    return -9999999*(checkResult != 2); 
 
   var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
