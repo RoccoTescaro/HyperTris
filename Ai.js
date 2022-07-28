@@ -3,7 +3,7 @@ var board = new Board();
 
 onmessage = function(e) {
   board.makeMove(e.data);
-  var bestMove = findBestMove(board,5); //its a tuple
+  var bestMove = findBestMove(board,7); //its a tuple
   board.makeMove(bestMove[0]);
   postMessage(bestMove);
 }
