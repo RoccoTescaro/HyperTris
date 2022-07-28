@@ -20,7 +20,7 @@ function findBestMove(board_, depth_)
   {
     var move = possibleMoves[moveIndex];
     board_.makeMove(move);
-    var score = -pvsWithQuiesceSearch(board_,depth_);
+    var score = -pvsWithZWSearch(board_,depth_);
     board_.undoMove();
     if(score > bestScore)
     {
@@ -82,36 +82,6 @@ function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999
   return alpha_;
 }
 
-//PVS with QUIESCE
-function pvsWithQuiesceSearch(board_, depth_, alpha_=-9999999, beta_=9999999) {
-  if( depth_ == 0 ) 
-    return quiesce( board_, alpha_, beta_ );
-
-  var possibleMoves = board_.generatePossibleMoves();
-  order(possibleMoves);
-  
-  if(possibleMoves.length == 0){
-    var checkResult = board_.check(0,board_.chunks);
-    return -9999999*(checkResult != 2);
-  }
-
-  for (var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
-  {
-    var move = possibleMoves[moveIndex];
-    board_.makeMove(move);
-    var score = -pvsWithQuiesceSearch(board_, depth_ -1, -beta_, -alpha_);
-    board_.undoMove();
-
-    if(score >= beta_)
-      return beta_;
-    
-    if(score > alpha_)
-      alpha_ = score;
-  }
-  
-  return alpha_;
-}
-
 //PVS with ZWSEARCH AND QUIESCE
 function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 {
@@ -159,10 +129,6 @@ function zwSearch(board_, beta_, depth_)
 {
   if(depth_ == 0)
     return quiesce(board_, beta_-1, beta_);
-
-  var checkResult = board_.check(0,board_.chunks);
-  if( checkResult != 0)
-    return -9999999*(checkResult != 2); 
 
   var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
