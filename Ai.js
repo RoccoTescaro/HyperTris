@@ -193,7 +193,7 @@ function quiesce(board_, alpha_, beta_)
 
   var stand_path = board_.evaluate();
   if(stand_path >= beta_)
-    return beta_;
+    return stand_path;
   alpha_ = Math.max(alpha_, stand_path);
 
   var possibleTris = board_.generatePossibleTris();
