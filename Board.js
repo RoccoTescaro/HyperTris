@@ -146,7 +146,7 @@ class Board
     for (var i = 0; i < possibleTris.length; ++i) {
       var move = possibleTris[i];
       this.makeMove(move);
-      if (this.check(parseInt(move / 9) * 9, this.cells) % 2 == 0)
+      if (this.check(0, this.chunks) % 2 == 0)
         possibleTris.splice(i, 1);
       this.undoMove();
     }
