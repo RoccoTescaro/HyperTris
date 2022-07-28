@@ -1,7 +1,7 @@
 class Board
 {
-  player = 1;
-  ai = -1;
+  #player = 1;
+  #ai = -1;
   turn = 1;
   chunks;
   cells;
@@ -90,8 +90,8 @@ class Board
 
   evaluate()
   {
-    var xMaterial = this.#countMaterial(this.player);
-    var oMaterial = this.#countMaterial(this.ai);
+    var xMaterial = this.#countMaterial(this.#player);
+    var oMaterial = this.#countMaterial(this.#ai);
 
     var evaluation = xMaterial - oMaterial;
     return evaluation;

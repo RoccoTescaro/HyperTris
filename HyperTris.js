@@ -1,11 +1,8 @@
 const myWorker = new Worker("Ai.js");
-var board;
+var board = new Board();
 var  names = ["","X","","O"];
+initBoard();
 
-window.onload = function(){
-  board = new Board()
-  initBoard();
-};
 
 function initBoard()
 {
@@ -55,7 +52,6 @@ function initBoard()
   document.body.appendChild(board_html);
 }
 
-
 function click(index_)
 {
   if(!document.getElementById(index_).classList.contains("enabledCell") || board.turn != 1)
@@ -63,7 +59,7 @@ function click(index_)
 
   board.makeMove(index_);
   updateView(board);
-  setTimeout("aiMakeMove(board)",0);
+  setTimeout("aiMakeMove(index_)",0);
 }
 
 function updateView(board_)
@@ -113,17 +109,17 @@ function updateBar(evaluation_)
   bar.style.height = height.toString().concat("%");
 }
 
-function aiMakeMove(board_)
+function aiMakeMove(index_)
 {
-  if(board_.turn == 1)
+  if(board.turn == 1)
     return;
 
-  myWorker.postMessage(JSON.stringify(board_));
+  myWorker.postMessage(index_);
 
   myWorker.onmessage = function(e) {
     var tuple = e.data;
-    board_.makeMove(tuple[0]);
-    updateView(board_);
+    board.makeMove(tuple[0]);
+    updateView(board);
     updateBar(tuple[1]);
   }
 }
