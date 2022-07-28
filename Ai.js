@@ -148,6 +148,7 @@ function quiesce(board_, alpha_, beta_)
   alpha_ = Math.max(alpha_, stand_path);
 
   var possibleTris = board_.generatePossibleTris();
+  console.log(possibleTris.length);
   for(var moveIndex = 0; moveIndex < possibleTris.length; ++moveIndex)
   {
     var move = possibleTris[moveIndex];
