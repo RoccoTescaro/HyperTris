@@ -142,12 +142,13 @@ class Board
 
   generatePossibleTris()
   {
-    var possibleTris = this.generatePossibleMoves();
-    for (var i = 0; i < possibleTris.length; ++i) {
-      var move = possibleTris[i];
+    var possibleMoves = this.generatePossibleMoves();
+    var possibleTris = new Array();
+    for (var i = 0; i < possibleMoves.length; ++i) {
+      var move = possibleMoves[i];
       this.makeMove(move);
-      if (this.check(parseInt(move/9)*9, this.cells) % 2 == 0)
-        possibleTris.splice(i, 1);
+      if (this.check(parseInt(move/9)*9, this.cells) % 2 != 0)
+        possibleTris.push(move);
       this.undoMove();
     }
     //console.log(this.cells,possibleTris.length, possibleTris);
