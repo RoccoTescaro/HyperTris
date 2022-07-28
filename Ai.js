@@ -12,20 +12,20 @@ onmessage = function(e) {
 function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999)
 {
   if(depth_ == 0)
-    return board_.turn*evaluate(board_);
+    return board_.turn*board_.evaluate();
 
-  var checkResult = check(board_,0,board_.chunks);
+  var checkResult = board_.check(0,board_.chunks);
   if( checkResult != 0)
     return -9999999*(checkResult != 2); //return 0 if stalemate else 9999999
 
-  var possibleMoves = generatePossibleMoves(board_);
+  var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
 
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
     var move = possibleMoves[moveIndex];
     var score;
-    makeMove(board_, move);
+    board_.makeMove(move);
 
     if(moveIndex == 0)
         score = -principalVariationSearch(board_, depth_ - 1, -beta_, -alpha_);
@@ -37,7 +37,7 @@ function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999
           score = -principalVariationSearch(board_, depth_ - 1, -beta_, -score);
     }
 
-    undoMove(board_);
+    board_.undoMove();
 
     alpha_ = Math.max(alpha_, score);
     if(alpha_ >= beta_)
@@ -52,15 +52,15 @@ function findBestMove(board_, depth_)
   var bestScore = -9999999;
   var bestMove = undefined;
 
-  var possibleMoves = generatePossibleMoves(board_);
+  var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
 
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
     var move = possibleMoves[moveIndex];
-    makeMove(board_,move);
+    board_.makeMove(move);
     var score = -principalVariationSearch(board_,depth_);
-    undoMove(board_);
+    board_.undoMove();
     if(score > bestScore)
     {
       bestScore = score;
@@ -84,18 +84,18 @@ function order(possibleMoves_){
 
 function quiesce(board_, alpha_, beta_)
 {
-  var stand_path = evaluate(board_);
+  var stand_path = board_.evaluate();
   if(stand_path >= beta_)
     return beta_;
   alpha_ = Math.max(alpha_, stand_path);
 
-  var possibleTris = generatePossibleTris(board_);
+  var possibleTris = board_.generatePossibleTris();
   for(var moveIndex = 0; moveIndex < possibleTris.length; ++moveIndex)
   {
     var move = possibleTris[moveIndex];
-    makeMove(board_, move);
+    board_.makeMove(move);
     var score = -quiesce(board_,-beta_,-alpha_);
-    undoMove(board_);
+    board_.undoMove();
     if(score >= beta_)
       return beta_;
     alpha_ = Math.max(alpha_, score);
@@ -110,14 +110,14 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
     return quiesce(board_, alpha_, beta_);
 
   var bSearchPV = true;
-  var possibleMoves = generatePossibleMoves(board_);
+  var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
 
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
       var move = possibleMoves[moveIndex];
       var score;
-      makeMove(board_, move);
+      board_.makeMove(move);
 
       if(bSearchPV)
         score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
@@ -128,7 +128,7 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
           score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
       }
 
-      undoMove(board_);
+      board_.undoMove();
 
       if(score >= beta_)
         return beta_;
@@ -149,14 +149,14 @@ function zwSearch(board_, beta_, depth_)
   if(depth_ == 0)
     return quiesce(board_, beta_-1, beta_);
 
-  var possibleMoves = generatePossibleMoves(board_);
+  var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
       var move = possibleMoves[moveIndex];
-      makeMove(board_, move);
+      board_.makeMove(move);
       var score = -zwSearch(1 - beta_, depth_ - 1);
-      undoMove(board_);
+      board_.undoMove();
       if(score >= beta_)
         return beta_;
   }
