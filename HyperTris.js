@@ -59,7 +59,8 @@ function click(index_)
 
   board.makeMove(index_);
   updateView(board);
-  setTimeout("aiMakeMove(index_)",0);
+  aiMakeMove(index_);
+  //setTimeout("aiMakeMove(index_)",0);
 }
 
 function updateView(board_)
@@ -111,7 +112,7 @@ function updateBar(evaluation_)
 
 function aiMakeMove(index_)
 {
-  if(board.turn == 1)
+  if(board.turn == 1) //make a function to verify if is player turn
     return;
 
   myWorker.postMessage(index_);
