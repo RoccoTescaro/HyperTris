@@ -94,29 +94,27 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
-      var move = possibleMoves[moveIndex];
-      var score;
-      board_.makeMove(move);
+    var move = possibleMoves[moveIndex];
+    var score;
+    board_.makeMove(move);
 
-      if(bSearchPV)
+    if (bSearchPV)
+      score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
+    else {
+      score = -zwSearch(board_, -alpha_, depth_ - 1);
+      if (score > alpha_)
         score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
-      else
-      {
-        score = -zwSearch(board_, -alpha_, depth_-1);
-        if(score > alpha_)
-          score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
-      }
+    }
 
-      board_.undoMove();
+    board_.undoMove();
 
-      if(score >= beta_)
-        return beta_;
+    if (score >= beta_)
+      return beta_;
 
-      if(score > alpha_)
-      {
-          alpha_ = score;
-          bSearchPV = false;
-      }
+    if (score > alpha_)
+      alpha_ = score;
+
+    bSearchPV = false;
 
   }
 
