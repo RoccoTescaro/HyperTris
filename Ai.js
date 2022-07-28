@@ -20,7 +20,7 @@ function findBestMove(board_, depth_)
   {
     var move = possibleMoves[moveIndex];
     board_.makeMove(move);
-    var score = -pvsWithZWSearch(board_,depth_);
+    var score = -pvsWithQuiesceSearch(board_,depth_);
     board_.undoMove();
     if(score > bestScore)
     {
@@ -83,33 +83,41 @@ function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999
 }
 
 //PVS with QUIESCE
-/*function pvsWithQuiesceSearch(board_, depth_, alpha_, beta_) {
+function pvsWithQuiesceSearch(board_, depth_, alpha_=-9999999, beta_=9999999) {
   if( depth_ == 0 ) 
     return quiesce( board_, alpha_, beta_ );
+
+  var checkResult = board_.check(0,board_.chunks);
+  if( checkResult != 0)
+    return -9999999*(checkResult != 2); 
 
   var bSearchPv = true;
   var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
   
-  for ( all moves)  {
-     make
-     if ( bSearchPv ) {
-        score = -pvSearch(-beta, -alpha, depth - 1);
-     } else {
-        score = -pvSearch(-alpha-1, -alpha, depth - 1);
-        if ( score > alpha ) // in fail-soft ... && score < beta ) is common
-           score = -pvSearch(-beta, -alpha, depth - 1); // re-search
-     }
-     unmake
-     if( score >= beta )
-        return beta;   // fail-hard beta-cutoff
-     if( score > alpha ) {
-        alpha = score; // alpha acts like max in MiniMax
-        bSearchPv = false;  // *1)
-     }
+  for (var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
+  {
+    var move = possibleMoves[moveIndex];
+    var score;
+    board_.makeMove(move);
+
+    if ( bSearchPv ) {
+      score = -pvsWithQuiesceSearch(board_, depth_ - 1, -beta_, -alpha_);
+    } else {
+      score = -pvsWithQuiesceSearch(board_, depth_ - 1, -alpha_-1, -alpha_);
+      if ( score > alpha_ ) // in fail-soft ... && score < beta ) is common
+        score = -pvsWithQuiesceSearch(board_, depth_ - 1, -beta_, -alpha_); // re-search
+    }
+    board_.undoMove();
+    if( score >= beta_ )
+      return beta_;   // fail-hard beta-cutoff
+    if( score > alpha_ ) {
+      alpha_ = score; // alpha acts like max in MiniMax
+    }
+    bSearchPv = false;  // *1)
   }
-  return alpha; // fail-hard
-}*/
+  return alpha_; // fail-hard
+}
 
 //PVS with ZWSEARCH AND QUIESCE
 function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
