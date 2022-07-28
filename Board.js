@@ -150,6 +150,7 @@ class Board
         possibleTris.splice(i, 1);
       this.undoMove();
     }
+    console.log(this.cells,possibleTris.length, possibleTris);
     return possibleTris;
   }
 
