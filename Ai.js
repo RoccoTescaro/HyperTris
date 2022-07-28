@@ -87,36 +87,29 @@ function pvsWithQuiesceSearch(board_, depth_, alpha_=-9999999, beta_=9999999) {
   if( depth_ == 0 ) 
     return quiesce( board_, alpha_, beta_ );
 
-  var checkResult = board_.check(0,board_.chunks);
-  if( checkResult != 0)
-    return -9999999*(checkResult != 2); 
-
-  var bSearchPv = true;
   var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
   
+  if(possibleMoves.length == 0){
+    var checkResult = board_.check(0,board_.chunks);
+    return -9999999*(checkResult != 2);
+  }
+
   for (var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
     var move = possibleMoves[moveIndex];
-    var score;
     board_.makeMove(move);
-
-    if ( bSearchPv ) {
-      score = -pvsWithQuiesceSearch(board_, depth_ - 1, -beta_, -alpha_);
-    } else {
-      score = -pvsWithQuiesceSearch(board_, depth_ - 1, -alpha_-1, -alpha_);
-      if ( score > alpha_ ) // in fail-soft ... && score < beta ) is common
-        score = -pvsWithQuiesceSearch(board_, depth_ - 1, -beta_, -alpha_); // re-search
-    }
+    var score = -pvsWithQuiesceSearch(board_, depth_ -1, -beta_, -alpha_);
     board_.undoMove();
-    if( score >= beta_ )
-      return beta_;   // fail-hard beta-cutoff
-    if( score > alpha_ ) {
-      alpha_ = score; // alpha acts like max in MiniMax
-    }
-    bSearchPv = false;  // *1)
+
+    if(score >= beta_)
+      return beta_;
+    
+    if(score > alpha_)
+      alpha_ = score;
   }
-  return alpha_; // fail-hard
+  
+  return alpha_;
 }
 
 //PVS with ZWSEARCH AND QUIESCE
@@ -187,26 +180,24 @@ function zwSearch(board_, beta_, depth_)
 
 function quiesce(board_, alpha_, beta_)
 {
-  var checkResult = board_.check(0,board_.chunks);
-  if( checkResult != 0)
-    return -9999999*(checkResult != 2); 
-
-  var stand_path = board_.evaluate();
-  if(stand_path >= beta_)
-    return stand_path;
-  alpha_ = Math.max(alpha_, stand_path);
+  var eval = board_.evaluate();
+  if(eval >= beta_)
+    return beta_;
+  if(eval > alpha_)
+    alpha_ = eval;
 
   var possibleTris = board_.generatePossibleTris();
-  //console.log(possibleTris.length);
-  for(var moveIndex = 0; moveIndex < possibleTris.length; ++moveIndex)
+  order(possibleTris);
+  for(var moveIndex = 0; moveIndex < possibleTris.length; moveIndex++)
   {
     var move = possibleTris[moveIndex];
     board_.makeMove(move);
-    var score = -quiesce(board_,-beta_,-alpha_);
+    eval = -quiesce(board_,-beta_,-alpha_);
     board_.undoMove();
-    if(score >= beta_)
+    if(eval >= beta_)
       return beta_;
-    alpha_ = Math.max(alpha_, score);
+    if(eval > alpha_)
+      alpha_ = eval;
   }
 
   return alpha_;
