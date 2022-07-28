@@ -142,18 +142,15 @@ class Board
 
   generatePossibleTris()
   {
-      var lastMove = this.moves.at(-1);
-      var possibleTris = this.generatePossibleMoves();
-      var base = parseInt(lastMove/9)*9;
-      for(var i = 0; i < possibleTris.length; ++i)
-      {
-        var move = possibleTris[i];
-        this.makeMove(move);
-        if(this.check(base,this.cells)%2 == 0)
-          possibleTris.splice(i,1);
-        this.undoMove(move);
-      }
-      return possibleTris;
+    var possibleTris = this.generatePossibleMoves();
+    for (var i = 0; i < possibleTris.length; ++i) {
+      var move = possibleTris[i];
+      this.makeMove(move);
+      if (this.check(parseInt(move / 9) * 9, this.cells) % 2 == 0)
+        possibleTris.splice(i, 1);
+      this.undoMove();
+    }
+    return possibleTris;
   }
 
 }
