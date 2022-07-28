@@ -8,7 +8,42 @@ onmessage = function(e) {
   postMessage(bestMove);
 }
 
+function findBestMove(board_, depth_)
+{
+  var bestScore = -9999999;
+  var bestMove = undefined;
 
+  var possibleMoves = board_.generatePossibleMoves();
+  order(possibleMoves);
+
+  for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
+  {
+    var move = possibleMoves[moveIndex];
+    board_.makeMove(move);
+    var score = -pvsWithZWSearch(board_,depth_);
+    board_.undoMove();
+    if(score > bestScore)
+    {
+      bestScore = score;
+      bestMove = move;
+    }
+
+    //console.log(move,score);
+  }
+
+  return [bestMove,bestScore];
+
+}
+
+function order(possibleMoves_){
+  var eval = [1,0,1,0,2,0,1,0,1];
+  possibleMoves_.sort((a,b) =>
+  {
+    return (eval[b%9]+eval[parseInt(b/9)])-(eval[a%9]+eval[parseInt(a/9)]);
+  });
+}
+
+//PVS SEARCH
 function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999)
 {
   if(depth_ == 0)
@@ -47,63 +82,7 @@ function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999
   return alpha_;
 }
 
-function findBestMove(board_, depth_)
-{
-  var bestScore = -9999999;
-  var bestMove = undefined;
-
-  var possibleMoves = board_.generatePossibleMoves();
-  order(possibleMoves);
-
-  for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
-  {
-    var move = possibleMoves[moveIndex];
-    board_.makeMove(move);
-    var score = -principalVariationSearch(board_,depth_);
-    board_.undoMove();
-    if(score > bestScore)
-    {
-      bestScore = score;
-      bestMove = move;
-    }
-
-    //console.log(move,score);
-  }
-
-  return [bestMove,bestScore];
-
-}
-
-function order(possibleMoves_){
-  var eval = [1,0,1,0,2,0,1,0,1];
-  possibleMoves_.sort((a,b) =>
-  {
-    return (eval[b%9]+eval[parseInt(b/9)])-(eval[a%9]+eval[parseInt(a/9)]);
-  });
-}
-
-function quiesce(board_, alpha_, beta_)
-{
-  var stand_path = board_.evaluate();
-  if(stand_path >= beta_)
-    return beta_;
-  alpha_ = Math.max(alpha_, stand_path);
-
-  var possibleTris = board_.generatePossibleTris();
-  for(var moveIndex = 0; moveIndex < possibleTris.length; ++moveIndex)
-  {
-    var move = possibleTris[moveIndex];
-    board_.makeMove(move);
-    var score = -quiesce(board_,-beta_,-alpha_);
-    board_.undoMove();
-    if(score >= beta_)
-      return beta_;
-    alpha_ = Math.max(alpha_, score);
-  }
-
-  return alpha_;
-}
-
+//PVS with ZWSEARCH AND QUIESCE
 function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 {
   if(depth_ == 0)
@@ -162,3 +141,27 @@ function zwSearch(board_, beta_, depth_)
   }
   return beta_ -1;
 }
+
+function quiesce(board_, alpha_, beta_)
+{
+  var stand_path = board_.evaluate();
+  if(stand_path >= beta_)
+    return beta_;
+  alpha_ = Math.max(alpha_, stand_path);
+
+  var possibleTris = board_.generatePossibleTris();
+  for(var moveIndex = 0; moveIndex < possibleTris.length; ++moveIndex)
+  {
+    var move = possibleTris[moveIndex];
+    board_.makeMove(move);
+    var score = -quiesce(board_,-beta_,-alpha_);
+    board_.undoMove();
+    if(score >= beta_)
+      return beta_;
+    alpha_ = Math.max(alpha_, score);
+  }
+
+  return alpha_;
+}
+
+
