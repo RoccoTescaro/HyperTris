@@ -146,7 +146,7 @@ function zwSearch(board_, beta_, depth_)
 
 function quiesce(board_, alpha_, beta_)
 {
-  var eval = board_.evaluate();
+  var eval = board_.turn*board_.evaluate();
   if(eval >= beta_)
     return beta_;
   if(eval > alpha_)
