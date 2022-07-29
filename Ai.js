@@ -88,9 +88,9 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
   if(depth_ == 0)
     return quiesce(board_, alpha_, beta_);
 
-  var checkResult = board_.check(0,board_.chunks);
+  var checkResult = board_.check(0,board_.chunks); //maybe its just better to add this to evaluate function
   if( checkResult != 0)
-    return -9999999*(checkResult != 2); 
+    return (-9999999+board_.moves.length)*(checkResult != 2); 
 
   var bSearchPV = true;
   var possibleMoves = board_.generatePossibleMoves();
