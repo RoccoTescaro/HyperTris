@@ -164,7 +164,7 @@ class Board
   computeHash()
   {
     var h = 0;
-    for(var i = 0; i < this.cells; i++)
+    for(var i = 0; i < this.cells.length; i++)
     {
       if(this.cells[i] == this.#player)
         h ^= this.#zobristTable[0][i];
