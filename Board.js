@@ -6,6 +6,7 @@ class Board
   chunks;
   cells;
   moves;
+  #zobristTable;
 
   constructor()
   {
@@ -20,6 +21,11 @@ class Board
                    0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0 ];
     this.moves = new Array();
+    this.#zobristTable = [[],[]];
+    for(var i = 0; i < this.cells.length; ++i){
+      this.#zobristTable[0].push(Math.floor(Math.random()*(Math.pow(2,64)-1)));//PLAYER
+      this.#zobristTable[1].push(Math.floor(Math.random()*(Math.pow(2,64)-1)));//AI
+    }
   }
 
   makeMove(index_)
@@ -155,4 +161,16 @@ class Board
     return possibleTris;
   }
 
+  computeHash()
+  {
+    var h = 0;
+    for(var i = 0; i < this.cells; i++)
+    {
+      if(this.cells[i] == this.#player)
+        h ^= this.#zobristTable[0][i];
+      else if(this.cells[i] == this.#ai)
+        h ^= this.#zobristTable[1][i];
+    }
+    return h;
+  }
 }
