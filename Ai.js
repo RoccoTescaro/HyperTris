@@ -6,10 +6,11 @@ onmessage = function(e) {
   var bestMove;
   for(var i = 0; i < 9; i++){
     bestMove = findBestMove(board,i); //its a tuple
-    console.table(bestMove);
+    console.log(bestMove[0], bestMove[1]);
+    this.postMessage(["BAR", bestMove[1]])
   }
   board.makeMove(bestMove[0]);
-  postMessage(bestMove);
+  postMessage(["MOVE", bestMove[0]]);
 }
 
 function findBestMove(board_, depth_)

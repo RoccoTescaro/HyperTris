@@ -119,8 +119,12 @@ function aiMakeMove(index_)
 
   myWorker.onmessage = function(e) {
     var tuple = e.data;
-    board.makeMove(tuple[0]);
-    updateView(board);
-    updateBar(tuple[1]);
+    if(tuple[0] == "BAR")
+      updateBar(tuple[1]);
+    else if(tuple[0] == "MOVE")
+    {
+      board.makeMove(tuple[0]);
+      updateView(board);
+    }
   }
 }
