@@ -1,12 +1,14 @@
 importScripts("Board.js");
 var board = new Board();
+var targetDepth = 15;
 
 onmessage = function(e) {
   board.makeMove(e.data);
   var bestMove;
-  for(var i = 0; i < 9; i++){
+  console.log("new search");
+  for(var i = 0; i < targetDepth; i++){
     bestMove = findBestMove(board,i); //its a tuple
-    console.log(bestMove[0], bestMove[1]);
+    console.log("depth ", i, ": bestMove = ", bestMove[0], ", evaluation = ", bestMove[1]);
     this.postMessage(["BAR", bestMove[1]])
   }
   board.makeMove(bestMove[0]);

@@ -39,7 +39,7 @@ function initBoard()
   bar_html = document.createElement("div");
   bar_html.id = "bar";
   evaluationBar_html.appendChild(bar_html);
-  var nTick = 5;
+  var nTick = 4;
   for(var i = 1; i < nTick+1; ++i)
   {
     var tick_html = document.createElement("tick");
@@ -104,8 +104,8 @@ function updateView(board_)
 
 function updateBar(evaluation_)
 {
-  var evaluationClamp = Math.min(Math.max(evaluation_,-1000),1000);
-  var height = 50 + evaluationClamp/20;
+  var mapEval = 3*Math.pow(Math.abs(evaluation_),0.125) + 4.75*Math.pow(Math.abs(evaluation_),0.25);
+  var height = 50 + mapEval*Math.sign(evaluation_);
   var bar = document.getElementById("bar");
   bar.style.height = height.toString().concat("%");
 }
