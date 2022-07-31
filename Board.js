@@ -182,10 +182,12 @@ class Board
     if(this.transTable[hash] != null && this.transTable[hash].depth > depth_) 
       return;
     
-    this.transTable[hash].depth = depth_;
-    this.transTable[hash].evaluation = value_;
-    this.transTable[hash].flag = flag_;
-    this.transTable[hash].bestMove = move_;
+    this.transTable[hash] = {
+      depth : depth_,
+      evaluation : value_,
+      flag: flag_,
+      bestMove : move_ 
+    };
   }
 
   ttProbe(depth_, alpha_, beta_, move_)
