@@ -123,7 +123,7 @@ function aiMakeMove(index_)
       updateBar(tuple[1]);
     else if(tuple[0] == "MOVE")
     {
-      board.makeMove(tuple[0]);
+      board.makeMove(tuple[1]);
       updateView(board);
     }
   }
