@@ -3,7 +3,7 @@ var board = new Board();
 
 onmessage = function(e) {
   board.makeMove(e.data);
-  var bestMove = findBestMove(board,7); //its a tuple
+  var bestMove = findBestMove(board,9); //its a tuple
   board.makeMove(bestMove[0]);
   postMessage(bestMove);
 }
@@ -35,10 +35,24 @@ function findBestMove(board_, depth_)
 
 }
 
-function order(possibleMoves_){
+function order(possibleMoves_, board_=null){
   var eval = [1,0,1,0,2,0,1,0,1];
   possibleMoves_.sort((a,b) =>
   {
+    if(board_ != null)
+    {
+      board_.makeMove(a);
+      var hashA = board_.computeHash();
+      board_.undoMove();
+
+      board_.makeMove(b);
+      var hashB = board_.computeHash();
+      board_.undoMove();
+
+      if(board_.transTable[hashA] != null && board_.transTable[hashB] != null)
+        return board_.transTable[hashB].evaluation - board_.transTable[hashA].evaluation;
+    }
+
     return (eval[b%9]+eval[parseInt(b/9)])-(eval[a%9]+eval[parseInt(a/9)]);
   });
 }
@@ -101,7 +115,7 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 
   var bSearchPV = true;
   var possibleMoves = board_.generatePossibleMoves();
-  order(possibleMoves);
+  order(possibleMoves, board_);
   bestMove = possibleMoves[0];
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
@@ -144,7 +158,7 @@ function zwSearch(board_, beta_, depth_)
     return quiesce(board_, beta_-1, beta_);
 
   var possibleMoves = board_.generatePossibleMoves();
-  order(possibleMoves);
+  order(possibleMoves, board_);
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
       var move = possibleMoves[moveIndex];
@@ -166,7 +180,7 @@ function quiesce(board_, alpha_, beta_)
     alpha_ = eval;
 
   var possibleTris = board_.generatePossibleTris();
-  order(possibleTris);
+  order(possibleTris, board_);
   for(var moveIndex = 0; moveIndex < possibleTris.length; moveIndex++)
   {
     var move = possibleTris[moveIndex];
