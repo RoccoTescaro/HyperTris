@@ -1,6 +1,6 @@
 importScripts("Board.js");
 var board = new Board();
-var targetDepth = 9;
+var targetDepth = 7;
 
 onmessage = function(e) {
   board.makeMove(e.data);
