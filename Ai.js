@@ -85,6 +85,10 @@ function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999
 //PVS with ZWSEARCH AND QUIESCE
 function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 {
+  var score = board_.ttProbe(depth_, alpha_, beta_, null);
+  var flag = "TT_ALPHA";
+  var bestMove;
+
   if(depth_ == 0)
     return quiesce(board_, alpha_, beta_);
 
@@ -92,14 +96,16 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
   if( checkResult != 0)
     return (-9999999+board_.moves.length)*(checkResult != 2); 
 
+  if(score != null && score > alpha_ && score < beta_) //TT cutoff
+    return score;
+
   var bSearchPV = true;
   var possibleMoves = board_.generatePossibleMoves();
   order(possibleMoves);
-
+  bestMove = possibleMoves[0];
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
     var move = possibleMoves[moveIndex];
-    var score;
     board_.makeMove(move);
 
     if (bSearchPV)
@@ -110,18 +116,25 @@ function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
         score = -pvsWithZWSearch(board_, depth_ - 1, -beta_, -alpha_);
     }
 
-    board_.undoMove();
-
     if (score >= beta_)
+    {
+      board_.ttSave(depth_,score,"TT_BETA",bestMove);
+      board_.undoMove();
       return beta_;
+    }
 
     if (score > alpha_)
+    {
       alpha_ = score;
+      bestMove = move;
+      board_.ttSave(depth_,score,"TT_ALPHA",bestMove);
+    }
 
     bSearchPV = false;
-
+    board_.undoMove();
   }
 
+  board_.ttSave(depth_,score,"TT_EXACT",bestMove);
   return alpha_;
 }
 

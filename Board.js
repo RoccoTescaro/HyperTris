@@ -7,6 +7,7 @@ class Board
   cells;
   moves;
   #zobristTable;
+  transTable;
 
   constructor()
   {
@@ -26,6 +27,7 @@ class Board
       this.#zobristTable[0].push(Math.floor(Math.random()*(Math.pow(2,64)-1)));//PLAYER
       this.#zobristTable[1].push(Math.floor(Math.random()*(Math.pow(2,64)-1)));//AI
     }
+    this.transTable = new Object();
   }
 
   makeMove(index_)
@@ -172,5 +174,42 @@ class Board
         h ^= this.#zobristTable[1][i];
     }
     return h;
+  }
+
+  ttSave(depth_, value_, flag_, move_)
+  {
+    var hash = this.computeHash();
+    if(this.transTable[hash] != null && this.transTable[hash].depth > depth_) 
+      return;
+    
+    this.transTable[hash].depth = depth_;
+    this.transTable[hash].evaluation = value_;
+    this.transTable[hash].flag = flag_;
+    this.transTable[hash].bestMove = move_;
+  }
+
+  ttProbe(depth_, alpha_, beta_, move_)
+  {
+    var hash = this.computeHash();
+    if(this.transTable[hash] != null)
+    {
+      move_ = this.transTable[hash].bestMove;
+      
+      if (this.transTable[hash].depth >= depth_) 
+      {
+
+        if (this.transTable[hash].flag == "TT_EXACT")
+          return this.transTable[hash].evaluation;
+
+        if ((this.transTable[hash].flag == "TT_ALPHA") && (this.transTable[hash].evaluation <= alpha_))
+          return alpha_;
+
+        if ((this.transTable[hash].flag == "TT_BETA") && (this.transTable[hash].evaluation >= beta_))
+          return beta_;
+
+      }
+    }
+
+    return null;
   }
 }
