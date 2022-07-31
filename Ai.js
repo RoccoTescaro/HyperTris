@@ -1,6 +1,6 @@
 importScripts("Board.js");
 var board = new Board();
-var targetDepth = 7;
+var targetDepth = 8;
 
 onmessage = function(e) {
   board.makeMove(e.data);
@@ -107,23 +107,24 @@ function principalVariationSearch(board_, depth_, alpha_=-9999999, beta_=9999999
 function pvsWithZWSearch( board_, depth_, alpha_=-9999999, beta_=9999999)
 {
   var score = board_.ttProbe(depth_, alpha_, beta_, null);
-  var flag = "TT_ALPHA";
   var bestMove;
 
   if(depth_ == 0)
     return quiesce(board_, alpha_, beta_);
-
-  var checkResult = board_.check(0,board_.chunks); //maybe its just better to add this to evaluate function
-  if( checkResult != 0)
-    return (-9999999+board_.moves.length)*(checkResult != 2); 
 
   if(score != null && score > alpha_ && score < beta_) //TT cutoff
     return score;
 
   var bSearchPV = true;
   var possibleMoves = board_.generatePossibleMoves();
+
+  if(possibleMoves.length == 0)
+   return (-9999999+board_.moves.length)*( board_.check(0,board_.chunks) != 2); 
+
   order(possibleMoves, board_);
   bestMove = possibleMoves[0];
+
+  
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
     var move = possibleMoves[moveIndex];
@@ -165,7 +166,7 @@ function zwSearch(board_, beta_, depth_)
     return quiesce(board_, beta_-1, beta_);
 
   var possibleMoves = board_.generatePossibleMoves();
-  order(possibleMoves, board_);
+  order(possibleMoves);
   for(var moveIndex = 0; moveIndex < possibleMoves.length; ++moveIndex)
   {
       var move = possibleMoves[moveIndex];
@@ -187,7 +188,7 @@ function quiesce(board_, alpha_, beta_)
     alpha_ = eval;
 
   var possibleTris = board_.generatePossibleTris();
-  order(possibleTris, board_);
+  order(possibleTris);
   for(var moveIndex = 0; moveIndex < possibleTris.length; moveIndex++)
   {
     var move = possibleTris[moveIndex];

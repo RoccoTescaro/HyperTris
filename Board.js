@@ -111,7 +111,7 @@ class Board
     for(var i = 0; i < 9; ++i)
       score += this.#countChunkMaterial(color_,i*9,this.cells);
 
-    score += this.#countChunkMaterial(color_,0,this.chunks) * 100;
+    score += this.#countChunkMaterial(color_,0,this.chunks) * 25;
     return score;
   }
 
@@ -141,10 +141,10 @@ class Board
 
     if(nCol == 1 && n == 1)
       return 1;
-    else if(nCol == 2 && n != 3)
-      return 10;
+    else if((nCol == 2 && n != 3) || (nCol == 1 && n == 3))
+      return 5;
     else if(nCol == 3)
-      return 100;
+      return 25;
     return 0;
   }
 
