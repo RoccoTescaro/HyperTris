@@ -104,7 +104,7 @@ function updateView(board_)
 
 function updateBar(evaluation_)
 {
-  var mapEval = 3*Math.pow(Math.abs(evaluation_),0.125) + 4.75*Math.pow(Math.abs(evaluation_),0.25);
+  var mapEval = 8.75*Math.pow(Math.abs(evaluation_),0.25) - 6.75*Math.pow(Math.abs(evaluation_),0.1);
   var height = 50 + mapEval*Math.sign(evaluation_);
   var bar = document.getElementById("bar");
   bar.style.height = height.toString().concat("%");
