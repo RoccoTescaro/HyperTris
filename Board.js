@@ -163,36 +163,69 @@ class Board
     return possibleTris;
   }
 
-  computeHash()
+  computeHash(cells_)
   {
     var h = 0;
-    for(var i = 0; i < this.cells.length; i++)
+    for(var i = 0; i < cells_.length; i++)
     {
-      if(this.cells[i] == this.#player)
+      if(cells_[i] == this.#player)
         h ^= this.#zobristTable[0][i];
-      else if(this.cells[i] == this.#ai)
+      else if(cells_[i] == this.#ai)
         h ^= this.#zobristTable[1][i];
     }
     return h;
   }
+  
+  #transposition()
+  {
+	  const originalBoard = this.cells.slice();
+	  const transposedBoards = [];
+	
+	  const rotate90 = (arr) => arr[0].map((_, index) => arr.map(row => row[index]).reverse());
+  	let rotatedBoard = rotate90(originalBoard);
+  	transposedBoards.push(rotatedBoard);
+  	rotatedBoard = rotate90(rotatedBoard);
+  	transposedBoards.push(rotatedBoard);
+	  rotatedBoard = rotate90(rotatedBoard);
+  	transposedBoards.push(rotatedBoard);
+	
+	  const mirrorVertically = (arr) => arr.map(row => row.reverse());
+  	let mirroredBoard = mirrorVertically(originalBoard);
+  	transposedBoards.push(mirroredBoard);
+	  rotatedBoard = rotate90(mirroredBoard);
+  	transposedBoards.push(rotatedBoard);
+	  rotatedBoard = rotate90(rotatedBoard);
+  	transposedBoards.push(rotatedBoard);
+	  rotatedBoard = rotate90(rotatedBoard);
+  	transposedBoards.push(rotatedBoard);
+
+	  return transposedBoards;
+  }
 
   ttSave(depth_, value_, flag_, move_)
   {
-    var hash = this.computeHash();
-    if(this.transTable[hash] != null && this.transTable[hash].depth > depth_) 
-      return;
-    
-    this.transTable[hash] = {
+    var eval = {
       depth : depth_,
       evaluation : value_,
       flag: flag_,
       bestMove : move_ 
     };
+
+	  var boards = this.#transposition();
+	  boards.push(this.cells);
+	  boards.forEach(element => 
+		{
+		  var hash = this.computeHash(element);
+    	if(this.transTable[hash] != null && this.transTable[hash].depth > depth_) 
+        return;
+    
+    	this.transTable[hash] = eval;
+		});
   }
 
   ttProbe(depth_, alpha_, beta_, move_)
   {
-    var hash = this.computeHash();
+    var hash = this.computeHash(this.cells);
     if(this.transTable[hash] != null)
     {
       move_ = this.transTable[hash].bestMove;
