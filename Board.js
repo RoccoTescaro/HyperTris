@@ -228,7 +228,6 @@ class Board
 		transposed.push(currentBoard.slice());
 	} 
 	 
-	console.log(currentBoard);
 	currentBoard = this.#mirror(currentBoard);
 	transposed.push(currentBoard.slice());
 	  
