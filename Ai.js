@@ -49,11 +49,11 @@ function order(possibleMoves_, board_=null){
     if(board_ != null)
     {
       board_.makeMove(a);
-      var hashA = board_.computeHash();
+      var hashA = board_.computeHash(board_.cells);
       board_.undoMove();
 
       board_.makeMove(b);
-      var hashB = board_.computeHash();
+      var hashB = board_.computeHash(board_.cells);
       board_.undoMove();
 
       if(board_.transTable[hashA] != null && board_.transTable[hashB] != null)
