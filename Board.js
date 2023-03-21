@@ -215,8 +215,8 @@ class Board
   return mirroredCells;
 }
 	
-  #transposition()
-  {
+#transposition()
+{
 	const transposed = [];
 	  
   	let currentBoard = this.cells.slice();
@@ -228,6 +228,7 @@ class Board
 		transposed.push(currentBoard.slice());
 	} 
 	 
+	console.log(currentBoard);
 	currentBoard = this.#mirror(currentBoard);
 	transposed.push(currentBoard.slice());
 	  
@@ -240,7 +241,7 @@ class Board
     	transposed.push(currentBoard.slice());
 
   	return transposed;
-  }
+ }
 
   ttSave(depth_, value_, flag_, move_)
   {
