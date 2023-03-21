@@ -204,22 +204,20 @@ class Board
 
   ttSave(depth_, value_, flag_, move_)
   {
-    var eval = {
-      depth : depth_,
-      evaluation : value_,
-      flag: flag_,
-      bestMove : move_ 
-    };
-
-	  var boards = this.#transposition();
-	  boards.push(this.cells);
-	  boards.forEach(element => 
+	var boards = this.#transposition();
+	boards.push(this.cells);
+	boards.forEach(element => 
 		{
 		  var hash = this.computeHash(element);
-    	if(this.transTable[hash] != null && this.transTable[hash].depth > depth_) 
-        return;
+    		  if(this.transTable[hash] != null && this.transTable[hash].depth > depth_) 
+        		return;
     
-    	this.transTable[hash] = eval;
+    		 this.transTable[hash] = {
+      			depth : depth_,
+      			evaluation : value_,
+      			flag: flag_,
+      			bestMove : move_ 
+    			};
 		});
   }
 
