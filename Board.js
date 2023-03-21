@@ -176,39 +176,68 @@ class Board
     return h;
   }
   
+#rotate(cells) 
+{
+  const rotatedCells = [];
+
+  // Perform the rotation by iterating through the cells in the original array
+  for (let i = 0; i < cells.length; i++) {
+    // Calculate the new row and column for the current cell based on the rotation
+    const newRow = i % 9;
+    const newCol = 8 - Math.floor(i / 9);
+
+    // Calculate the index in the new array for the current cell
+    const newIndex = newRow * 9 + newCol;
+
+    // Copy the value from the original array to the new array at the new index
+    rotatedCells[newIndex] = cells[i];
+  }
+
+  return rotatedCells;
+}	
+	
+#mirror(cells) 
+{
+  const mirroredCells = [];
+
+  // Iterate through the rows of the original array from top to bottom
+  for (let i = 0; i < 9; i++) {
+    // Iterate through the columns of the current row from right to left
+    for (let j = 8; j >= 0; j--) {
+      // Calculate the index in the new array for the current cell
+      const newIndex = i * 9 + (8 - j);
+
+      // Copy the value from the original array to the new array at the new index
+      mirroredCells[newIndex] = cells[i * 9 + j];
+    }
+  }
+
+  return mirroredCells;
+}
+	
   #transposition()
   {
 	const transposed = [];
-
-  	// Add the original board
-  	transposed.push(this.cells);
-
-  	// Generate the transpositions
+	  
   	let currentBoard = this.cells.slice();
-  	for (let i = 0; i < 3; i++) 
+	transposed.push(currentBoard.slice());
+	  
+  	for (let i = 0; i < 3; i++)
 	{
-    		// Rotate the board 90 degrees
-    		currentBoard = currentBoard.map((cell, index) => {
-      		const row = Math.floor(index / 9);
-      		const col = index % 9;
-      		const newRow = col;
-      		const newCol = 8 - row;
-      		const newIndex = newRow * 9 + newCol;
-      		return this.cells[newIndex];
-    	});
-    	transposed.push(currentBoard.slice());
+		currentBoard = this.#rotate(currentBoard);	
+		transposed.push(currentBoard.slice());
+	} 
+	 
+	currentBoard = #mirror(currentBoard);
+	transposed.push(currentBoard.slice());
+	  
+	for (let i = 0; i < 3; i++)
+	{
+		currentBoard = this.#rotate(currentBoard);	
+		transposed.push(currentBoard.slice());
+	} 
 
-    	// Reflect the board horizontally
-    	currentBoard = currentBoard.map((cell, index) => {
-      		const row = Math.floor(index / 9);
-      		const col = index % 9;
-      		const newRow = row;
-      		const newCol = 8 - col;
-      		const newIndex = newRow * 9 + newCol;
-      		return this.cells[newIndex];
-    	});
     	transposed.push(currentBoard.slice());
-  	}
 
   	return transposed;
   }
