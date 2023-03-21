@@ -228,6 +228,7 @@ class Board
 		transposed.push(currentBoard.slice());
 	} 
 	 
+	//deploying bugs
 	currentBoard = this.#mirror(currentBoard);
 	transposed.push(currentBoard.slice());
 	  
