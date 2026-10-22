@@ -17,9 +17,13 @@ As in Ultimate tic tac toe, players cannot choose freely where to play. Once the
 ![](assets/hypertris-forced-move.gif)
 
 This gives life to two scenarios: 
+
 **What happens if the move of a player A obly the other one to move in a already decided chunk?**
+
 Well, easy, B has to play in the same chunk in which the player A has just made his/her move (in the original version B could chose any still open chunk). 
+
 **What happen if player A makes a tris or a draw in a chunk but his/her last move obly the enemy player B to play in a already completed chunk?** 
+
 B can place his/her symbol wherever he/she wants in a still open chunk.
 
 ![](assets/hypertris-completed-chunk-fallback.gif)
